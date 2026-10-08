@@ -149,5 +149,40 @@ void main() {
     expect(find.text('Signed in with LifeNest'), findsOneWidget);
     expect(find.text('Log Out'), findsOneWidget);
   });
+
+  testWidgets('Full navigation from Auth through Onboarding to Home screen', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MaterialApp(home: AuthScreen()));
+
+    // Tap Sign In to trigger navigation to OnboardingScreen
+    await tester.tap(find.text('Sign In →'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1000));
+    await tester.pumpAndSettle();
+
+    // Verify OnboardingScreen is shown
+    expect(find.text('Capture today.\nA calmer tomorrow.'), findsOneWidget);
+
+    // Advance through the pages to the last screen
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+
+    // On page 4, verify Let's get started button is present
+    expect(find.text("Let's get started"), findsOneWidget);
+
+    // Tap Let's get started
+    await tester.tap(find.text("Let's get started"));
+    await tester.pumpAndSettle();
+
+    // Verify HomeScreen is successfully rendered
+    expect(find.byType(HomeScreen), findsOneWidget);
+    expect(find.text('Alex'), findsOneWidget);
+    expect(find.text('Need action'), findsOneWidget);
+  });
 }
 

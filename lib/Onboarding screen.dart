@@ -76,18 +76,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _finish() async {
     if (_finishing) return;
     _finishing = true;
-    await OnboardingStore.complete();
-    if (!mounted) return;
-    if (widget.onFinish != null) {
-      widget.onFinish!();
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => HomeScreen(userName: widget.userName),
-        ),
-      );
+    try {
+      await OnboardingStore.complete();
+    } catch (e) {
+      debugPrint('Failed to save onboarding completion: $e');
     }
+    if (!mounted) return;
+    widget.onFinish?.call();
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HomeScreen(userName: widget.userName),
+      ),
+    );
   }
 
   void _next() {

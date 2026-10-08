@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'Home.dart';
 import 'Onboarding screen.dart';
 
 class _C {
@@ -70,17 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => OnboardingScreen(
-          userName: name,
-          onFinish: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => HomeScreen(userName: name),
-              ),
-            );
-          },
-        ),
+        builder: (_) => OnboardingScreen(userName: name),
       ),
     );
   }
