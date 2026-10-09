@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'Nest.dart';
 import 'main.dart';
 
 class _C {
@@ -70,7 +71,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _tab = 0; // 0 Home, 1 Inbox, 2 Browse, 3 Settings
+  int _tab = 0; // 0 Home, 1 Inbox, 2 Nest, 3 Settings
 
   // --- Hooks: connect these to your real screens -------------------------
   void _openNotifications() {
@@ -144,7 +145,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openTimeline() {
     /* TODO */
   }
-  void _openBrowse() => setState(() => _tab = 2);
+  void _openNest() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NestScreen()),
+    );
+  }
   void _openAllCollections() {
     /* TODO */
   }
@@ -184,14 +190,20 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             _buildHome(),
             const _TabPlaceholder('Inbox'),
-            const _TabPlaceholder('Browse'),
+            const NestScreen(),
             const _TabPlaceholder('Settings'),
           ],
         ),
       ),
       bottomNavigationBar: _BottomNav(
         index: _tab,
-        onTab: (i) => setState(() => _tab = i),
+        onTab: (i) {
+          if (i == 2) {
+            _openNest();
+          } else {
+            setState(() => _tab = i);
+          }
+        },
         onAdd: _openAddAnything,
       ),
     );
@@ -398,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // Saved for later
           Padding(
             padding: pad,
-            child: _SectionHeader('SAVED FOR LATER', 'Browse', _openBrowse),
+            child: _SectionHeader('SAVED FOR LATER', 'Nest', _openNest),
           ),
           const SizedBox(height: 8),
           _HorizontalList(
@@ -979,7 +991,7 @@ class _BottomNav extends StatelessWidget {
                   ),
                 ),
               ),
-              _item(2, Icons.explore_outlined, Icons.explore_rounded, 'Browse'),
+              _item(2, Icons.eco_outlined, Icons.eco_rounded, 'Nest'),
               _item(
                 3,
                 Icons.settings_outlined,

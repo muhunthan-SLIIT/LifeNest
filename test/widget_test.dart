@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_application_1/Home.dart';
+import 'package:flutter_application_1/Nest.dart';
 import 'package:flutter_application_1/Onboarding screen.dart';
 import 'package:flutter_application_1/auth_screen.dart';
 import 'package:flutter_application_1/main.dart';
@@ -119,10 +120,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Inbox'), findsWidgets);
 
-    // Switch to Browse tab
-    await tester.tap(find.text('Browse'));
+    // Tap Nest button to open Nest screen
+    await tester.tap(find.text('Nest').first);
     await tester.pumpAndSettle();
-    expect(find.text('Browse'), findsWidgets);
+    expect(find.byType(NestScreen), findsOneWidget);
+
+    // Tap Home in Nest screen bottom nav to return
+    await tester.tap(find.text('Home').last);
+    await tester.pumpAndSettle();
 
     // Switch to Settings tab
     await tester.tap(find.text('Settings'));
