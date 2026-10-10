@@ -7,13 +7,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'Focus.dart';
 import 'Nest.dart';
+import 'bottom_nav_bar.dart';
 import 'main.dart';
 
 class _C {
   static const forest = Color(0xFF16402B);
   static const cream = Color(0xFFFAF8F3);
-  static const navBg = Color(0xFFFEFDFB);
   static const border = Color(0xFFEFEDE7);
   static const muted = Color(0xFF6E7F75);
   static const leaf = Color(0xFF5E9B6F);
@@ -71,8 +72,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _tab = 0; // 0 Home, 1 Inbox, 2 Nest, 3 Settings
-
   // --- Hooks: connect these to your real screens -------------------------
   void _openNotifications() {
     /* TODO */
@@ -145,6 +144,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void _openTimeline() {
     /* TODO */
   }
+  void _openFocus() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FocusScreen(
+          userInitial: widget.userName.isNotEmpty
+              ? widget.userName[0].toUpperCase()
+              : 'A',
+        ),
+      ),
+    );
+  }
   void _openNest() {
     Navigator.push(
       context,
@@ -183,25 +194,20 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _C.cream,
+      extendBody: true,
       body: SafeArea(
         bottom: false,
-        child: IndexedStack(
-          index: _tab,
-          children: [
-            _buildHome(),
-            const _TabPlaceholder('Inbox'),
-            const NestScreen(),
-            const _TabPlaceholder('Settings'),
-          ],
-        ),
+        child: _buildHome(),
       ),
-      bottomNavigationBar: _BottomNav(
-        index: _tab,
-        onTab: (i) {
-          if (i == 2) {
+      bottomNavigationBar: LifeNestNavBar(
+        currentTab: 0,
+        onTabSelected: (target) {
+          if (target == 1) {
+            _openFocus();
+          } else if (target == 2) {
             _openNest();
-          } else {
-            setState(() => _tab = i);
+          } else if (target == 3) {
+            LifeNestNavBar.showBudget(context);
           }
         },
         onAdd: _openAddAnything,
@@ -216,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
         : widget.userName[0].toUpperCase();
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(bottom: 24),
+      padding: const EdgeInsets.only(bottom: 120),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -913,110 +919,7 @@ class _CollectionCard extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Bottom navigation
-// ---------------------------------------------------------------------------
 
-class _BottomNav extends StatelessWidget {
-  const _BottomNav({
-    required this.index,
-    required this.onTab,
-    required this.onAdd,
-  });
-
-  final int index;
-  final ValueChanged<int> onTab;
-  final VoidCallback onAdd;
-
-  Widget _item(int i, IconData icon, IconData activeIcon, String label) {
-    final active = index == i;
-    final color = active ? _C.forest : _C.muted;
-    return Expanded(
-      child: InkWell(
-        onTap: () => onTab(i),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(active ? activeIcon : icon, size: 24, color: color),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: _t(
-                11,
-                w: active ? FontWeight.w700 : FontWeight.w500,
-                color: color,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: _C.navBg,
-        border: Border(top: BorderSide(color: _C.border)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 66,
-          child: Row(
-            children: [
-              _item(0, Icons.home_outlined, Icons.home_rounded, 'Home'),
-              _item(1, Icons.inbox_outlined, Icons.inbox_rounded, 'Inbox'),
-              Expanded(
-                child: Center(
-                  child: Material(
-                    color: _C.forest,
-                    shape: const CircleBorder(),
-                    elevation: 3,
-                    shadowColor: const Color(0x4016402B),
-                    child: InkWell(
-                      customBorder: const CircleBorder(),
-                      onTap: onAdd,
-                      child: const SizedBox(
-                        width: 54,
-                        height: 54,
-                        child: Icon(
-                          Icons.add_rounded,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              _item(2, Icons.eco_outlined, Icons.eco_rounded, 'Nest'),
-              _item(
-                3,
-                Icons.settings_outlined,
-                Icons.settings_rounded,
-                'Settings',
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TabPlaceholder extends StatelessWidget {
-  const _TabPlaceholder(this.title);
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(title, style: _t(22, w: FontWeight.w800)),
-    );
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Add anything sheet

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter_application_1/Focus.dart';
 import 'package:flutter_application_1/Home.dart';
 import 'package:flutter_application_1/Nest.dart';
 import 'package:flutter_application_1/Onboarding screen.dart';
 import 'package:flutter_application_1/auth_screen.dart';
+import 'package:flutter_application_1/bottom_nav_bar.dart';
 import 'package:flutter_application_1/main.dart';
 
 void main() {
@@ -115,27 +117,56 @@ void main() {
     expect(find.text('Coming up'), findsOneWidget);
     expect(find.text('Add anything'), findsOneWidget);
 
-    // Switch to Inbox tab
-    await tester.tap(find.text('Inbox'));
+    // Tap Focus button to open Focus screen
+    await tester.tap(
+      find.descendant(
+        of: find.byType(LifeNestNavBar),
+        matching: find.text('Focus'),
+      ),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Inbox'), findsWidgets);
+    expect(find.byType(FocusScreen), findsOneWidget);
+
+    // Tap Home in Focus screen bottom nav to return
+    await tester.tap(
+      find.descendant(
+        of: find.byType(LifeNestNavBar),
+        matching: find.text('Home'),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     // Tap Nest button to open Nest screen
-    await tester.tap(find.text('Nest').first);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(LifeNestNavBar),
+        matching: find.text('Nest'),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(find.byType(NestScreen), findsOneWidget);
 
     // Tap Home in Nest screen bottom nav to return
-    await tester.tap(find.text('Home').last);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(LifeNestNavBar),
+        matching: find.text('Home'),
+      ),
+    );
     await tester.pumpAndSettle();
 
-    // Switch to Settings tab
-    await tester.tap(find.text('Settings'));
+    // Tap Budget button to open Budget sheet
+    await tester.tap(
+      find.descendant(
+        of: find.byType(LifeNestNavBar),
+        matching: find.text('Budget'),
+      ),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Settings'), findsWidgets);
+    expect(find.text('All subscriptions and bills are up to date.'), findsOneWidget);
 
-    // Switch back to Home
-    await tester.tap(find.text('Home'));
+    // Close Budget sheet
+    await tester.tap(find.byIcon(Icons.close_rounded));
     await tester.pumpAndSettle();
 
     // Open Add Anything bottom sheet via bottom nav center button

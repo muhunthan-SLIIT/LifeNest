@@ -13,6 +13,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'bottom_nav_bar.dart';
+
 // ───────────────────────── Design tokens ─────────────────────────
 class LN {
   static const cream = Color(0xFFFBF6EE); // page background
@@ -190,64 +192,57 @@ class NestScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: LN.cream,
       extendBody: true,
-      body: Stack(
-        children: [
-          SafeArea(
-            bottom: false,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 140),
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 16),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: _hPad),
-                    child: _Header(),
-                  ),
-                  const SizedBox(height: 20),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: _hPad),
-                    child: _SearchBar(),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: _hPad + 4),
-                    child: GestureDetector(
-                      onTap: () => debugPrint('Open full search'),
-                      child: Text(
-                        'Open full search →',
-                        style: LN.text(13.5, color: LN.forest),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 28),
-                  const _SectionLabel('CATEGORIES'),
-                  const SizedBox(height: 14),
-                  const _CategoryGrid(),
-                  const SizedBox(height: 28),
-                  const _SectionLabel('FILTERS'),
-                  const SizedBox(height: 14),
-                  const _FilterRows(),
-                  const SizedBox(height: 30),
-                  _SectionLabel(
-                    'COLLECTIONS',
-                    trailing: 'All',
-                    onTrailingTap: () => debugPrint('All collections'),
-                  ),
-                  const SizedBox(height: 14),
-                  const _CollectionsGrid(),
-                ],
+      body: SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 120),
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: _hPad),
+                child: _Header(),
               ),
-            ),
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: _hPad),
+                child: _SearchBar(),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: _hPad + 4),
+                child: GestureDetector(
+                  onTap: () => debugPrint('Open full search'),
+                  child: Text(
+                    'Open full search →',
+                    style: LN.text(13.5, color: LN.forest),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 28),
+              const _SectionLabel('CATEGORIES'),
+              const SizedBox(height: 14),
+              const _CategoryGrid(),
+              const SizedBox(height: 28),
+              const _SectionLabel('FILTERS'),
+              const SizedBox(height: 14),
+              const _FilterRows(),
+              const SizedBox(height: 30),
+              _SectionLabel(
+                'COLLECTIONS',
+                trailing: 'All',
+                onTrailingTap: () => debugPrint('All collections'),
+              ),
+              const SizedBox(height: 14),
+              const _CollectionsGrid(),
+            ],
           ),
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: _BottomNav(currentIndex: 3),
-          ),
-        ],
+        ),
+      ),
+      bottomNavigationBar: const LifeNestNavBar(
+        currentTab: 2,
       ),
     );
   }
@@ -603,133 +598,4 @@ class _CollectionCard extends StatelessWidget {
   }
 }
 
-// ───────────────────────── Bottom nav ─────────────────────────
-class _BottomNav extends StatelessWidget {
-  final int
-  currentIndex; // 0 Home, 1 Focus, 2 Add (not selectable), 3 Nest, 4 Budget
-  const _BottomNav({required this.currentIndex});
 
-  @override
-  Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).padding.bottom;
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        0,
-        16,
-        bottomInset > 0 ? bottomInset : 14,
-      ),
-      child: SizedBox(
-        height: 92,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.bottomCenter,
-          children: [
-            Container(
-              height: 76,
-              decoration: BoxDecoration(
-                color: LN.card,
-                borderRadius: BorderRadius.circular(38),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF14382A).withOpacity(0.14),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _navItem(context, Icons.home_outlined, 'Home', 0),
-                  ),
-                  Expanded(
-                    child: _navItem(
-                      context,
-                      Icons.auto_awesome_outlined,
-                      'Focus',
-                      1,
-                    ),
-                  ),
-                  const Expanded(child: SizedBox()), // space for the + button
-                  Expanded(
-                    child: _navItem(context, Icons.eco_outlined, 'Nest', 3),
-                  ),
-                  Expanded(
-                    child: _navItem(
-                      context,
-                      Icons.account_balance_wallet_outlined,
-                      'Budget',
-                      4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              bottom: 12,
-              child: GestureDetector(
-                onTap: () => debugPrint('Add Anything'),
-                child: Container(
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: LN.forest,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: LN.forest.withOpacity(0.35),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.add_rounded,
-                    color: Colors.white,
-                    size: 36,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _navItem(
-    BuildContext context,
-    IconData icon,
-    String label,
-    int index,
-  ) {
-    final active = index == currentIndex;
-    final color = active ? LN.forest : LN.muted;
-    return InkWell(
-      customBorder: const StadiumBorder(),
-      onTap: () {
-        if (index == 0 && Navigator.canPop(context)) {
-          Navigator.pop(context);
-        } else {
-          debugPrint('Nav: $label');
-        }
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 26, color: color),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: LN.text(
-              12,
-              weight: active ? FontWeight.w700 : FontWeight.w500,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
