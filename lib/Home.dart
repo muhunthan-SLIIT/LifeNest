@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'Focus.dart';
 import 'Nest.dart';
 import 'bottom_nav_bar.dart';
+import 'home_extras.dart';
 import 'main.dart';
 
 class _C {
@@ -74,7 +75,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // --- Hooks: connect these to your real screens -------------------------
   void _openNotifications() {
-    /* TODO */
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+    );
   }
   void _openProfile() {
     showModalBottomSheet(
@@ -142,7 +146,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openTimeline() {
-    /* TODO */
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const TimelineScreen()),
+    );
   }
   void _openFocus() {
     Navigator.push(
@@ -163,11 +170,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   void _openAllCollections() {
-    /* TODO */
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CollectionsScreen()),
+    );
   }
-  void _openItem(String title) {
-    /* TODO: open detail screen for [title] */
-  }
+  void _openItem(String title) => openHomeItem(context, title);
   // ------------------------------------------------------------------------
 
   void _openAddAnything() {
